@@ -57,6 +57,11 @@ jobs:
           else
             echo "ORIGINAL_TESTS=false" >> "$GITHUB_ENV"
           fi
+          if [ -f "$PROJECT_DIR/test/widget_test.dart" ]; then
+            echo "ORIGINAL_WIDGET_TEST=true" >> "$GITHUB_ENV"
+          else
+            echo "ORIGINAL_WIDGET_TEST=false" >> "$GITHUB_ENV"
+          fi
           echo "Flutter project: $PROJECT_DIR"
           find "$PROJECT_DIR" -maxdepth 2 -type f | sort | head -80
 
@@ -64,10 +69,16 @@ jobs:
         working-directory: ${{ env.PROJECT_DIR }}
         run: flutter create --platforms=android --org com.fatiha --project-name fatiha_islamic_companion .
 
-      - name: Remove generated placeholder test when source has no tests
+      - name: Configure Flutter test SDK and remove generated placeholder
         working-directory: ${{ env.PROJECT_DIR }}
-        if: env.ORIGINAL_TESTS != 'true'
-        run: rm -f test/widget_test.dart
+        shell: bash
+        run: |
+          if [ "$ORIGINAL_TESTS" = "true" ]; then
+            flutter pub add --dev flutter_test --sdk flutter
+          fi
+          if [ "$ORIGINAL_WIDGET_TEST" != "true" ]; then
+            rm -f test/widget_test.dart
+          fi
 
       - name: Resolve dependencies
         working-directory: ${{ env.PROJECT_DIR }}
