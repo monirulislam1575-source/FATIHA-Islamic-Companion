@@ -65,9 +65,15 @@ jobs:
           echo "Flutter project: $PROJECT_DIR"
           find "$PROJECT_DIR" -maxdepth 2 -type f | sort | head -80
 
-      - name: Generate or refresh Android wrapper
+      - name: Generate clean Android wrapper
         working-directory: ${{ env.PROJECT_DIR }}
-        run: flutter create --platforms=android --org com.fatiha --project-name fatiha_islamic_companion .
+        shell: bash
+        run: |
+          rm -rf android
+          flutter create --platforms=android --org com.fatiha --project-name fatiha_islamic_companion .
+          sed -i 's#gradle-[0-9.]*-all.zip#gradle-9.3.1-all.zip#' android/gradle/wrapper/gradle-wrapper.properties
+          echo 'Using Gradle wrapper:'
+          cat android/gradle/wrapper/gradle-wrapper.properties
 
       - name: Configure Flutter test SDK and remove generated placeholder
         working-directory: ${{ env.PROJECT_DIR }}
