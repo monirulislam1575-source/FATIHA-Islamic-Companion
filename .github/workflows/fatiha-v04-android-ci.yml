@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
   push:
     paths:
-      - 'FATIHA_Android_v0.4_Audio_Content_Management.zip'
+      - 'FATIHA_Android_v0.4_Audio_Content_Management(2)(2).zip'
       - '.github/workflows/fatiha-v04-android-ci.yml'
 
 permissions:
@@ -29,8 +29,8 @@ jobs:
           cache: true
       - name: Extract v0.4 source archive
         run: |
-          test -f FATIHA_Android_v0.4_Audio_Content_Management.zip
-          unzip -q FATIHA_Android_v0.4_Audio_Content_Management.zip -d source
+          test -f FATIHA_Android_v0.4_Audio_Content_Management(2)(2).zip
+          unzip -q FATIHA_Android_v0.4_Audio_Content_Management(2)(2).zip -d source
           test -f source/fatiha_android/pubspec.yaml
       - name: Generate Android platform scaffold
         working-directory: source/fatiha_android
