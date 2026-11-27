@@ -77,6 +77,22 @@ jobs:
           echo "Flutter project: $PROJECT_DIR"
           find "$PROJECT_DIR" -maxdepth 2 -type f | sort | head -80
 
+      - name: Fix audio controls widget syntax
+        working-directory: ${{ env.PROJECT_DIR }}
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p = Path('lib/screens/dua_amal_screen.dart')
+          s = p.read_text()
+          old = "label: Text(_playingId == item.id && _playerState == PlayerState.playing ? 'পজ করুন' : _playingId == item.id && _playerState == PlayerState.paused ? 'আবার চালান' : 'অডিও শুনুন')),\n"
+          new = "label: Text(_playingId == item.id && _playerState == PlayerState.playing ? 'পজ করুন' : _playingId == item.id && _playerState == PlayerState.paused ? 'আবার চালান' : 'অডিও শুনুন'))),\n"
+          if old not in s:
+              raise SystemExit('Expected audio widget syntax pattern was not found; refusing to modify source.')
+          p.write_text(s.replace(old, new, 1))
+          print('Fixed missing closing parenthesis in Align/TextButton widget.')
+          PY
+
       - name: Generate clean Android wrapper
         working-directory: ${{ env.PROJECT_DIR }}
         shell: bash
