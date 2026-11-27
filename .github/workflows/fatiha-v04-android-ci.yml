@@ -6,6 +6,7 @@ on:
     paths:
       - 'FATIHA_v0.4_Cloud_Build_Package.zip'
       - 'FATIHA_Android_v0.4_Audio_Content_Management(2)(2).zip'
+      - 'FATIHA_v0.4_Audio_Controls_Update.zip'
       - '.github/workflows/fatiha-v04-android-ci.yml'
 
 permissions:
@@ -35,7 +36,10 @@ jobs:
         shell: bash
         run: |
           mkdir -p source
-          if [ -f 'FATIHA_v0.4_Cloud_Build_Package.zip' ]; then
+          if [ -f 'FATIHA_v0.4_Audio_Controls_Update.zip' ]; then
+            unzip -q 'FATIHA_v0.4_Audio_Controls_Update.zip' -d source
+            PROJECT_DIR='source/fatiha_android'
+          elif [ -f 'FATIHA_v0.4_Cloud_Build_Package.zip' ]; then
             unzip -q 'FATIHA_v0.4_Cloud_Build_Package.zip' -d source
             PROJECT_DIR='source/fatiha_android'
           elif [ -f 'FATIHA_Android_v0.4_Audio_Content_Management(2)(2).zip' ]; then
@@ -47,7 +51,7 @@ jobs:
             fi
             PROJECT_DIR="$(dirname "$PUBSPEC_PATH")"
           else
-            echo "::error::Upload the FATIHA v0.4 Cloud Build Package ZIP to the repository root."
+            echo "::error::Upload the FATIHA v0.4 source ZIP to the repository root."
             exit 1
           fi
           test -f "$PROJECT_DIR/pubspec.yaml"
