@@ -36,9 +36,7 @@ jobs:
         shell: bash
         run: |
           if [ ! -f 'FATIHA_v0.4_Audio_Controls_Update.zip' ]; then
-            curl --fail --location --retry 3 \\
-              'https://drive.google.com/uc?export=download&id=1vdFDIypW65_MEy5ixLKzMXrwmqQNuJEI' \\
-              --output 'FATIHA_v0.4_Audio_Controls_Update.zip'
+            curl --fail --location --retry 3 --output 'FATIHA_v0.4_Audio_Controls_Update.zip' 'https://drive.google.com/uc?export=download&id=1vdFDIypW65_MEy5ixLKzMXrwmqQNuJEI'
           fi
           unzip -tq 'FATIHA_v0.4_Audio_Controls_Update.zip'
 
