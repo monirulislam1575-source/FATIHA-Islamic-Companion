@@ -102,20 +102,38 @@ jobs:
           p = Path('lib/screens/dua_amal_screen.dart')
           s = p.read_text()
           if 'late Future<List<IslamicContent>> _itemsFuture;' not in s:
-              s = s.replace('  double _playbackRate = 1.0;\\n', '  double _playbackRate = 1.0;\\n  late Future<List<IslamicContent>> _itemsFuture;\\n', 1)
+              s = s.replace(
+                  '  double _playbackRate = 1.0;',
+                  '  double _playbackRate = 1.0;\\n  late Future<List<IslamicContent>> _itemsFuture;',
+                  1,
+              )
           if '    _itemsFuture = _load();' not in s:
-              s = s.replace('  void initState() {\\n    super.initState();\\n', '  void initState() {\\n    super.initState();\\n    _itemsFuture = _load();\\n', 1)
+              s = s.replace(
+                  '    super.initState();',
+                  '    super.initState();\\n    _itemsFuture = _load();',
+                  1,
+              )
           if '  void _refreshItems() {' not in s:
-              s = s.replace('  @override\\n  void dispose() {', '  void _refreshItems() {\\n    setState(() => _itemsFuture = _load());\\n  }\\n\\n  @override\\n  void dispose() {', 1)
+              s = s.replace(
+                  '  @override\\n  void dispose() {',
+                  '  void _refreshItems() {\\n    setState(() => _itemsFuture = _load());\\n  }\\n\\n  @override\\n  void dispose() {',
+                  1,
+              )
           s = s.replace('future: _load(), builder:', 'future: _itemsFuture, builder:')
           s = s.replace('onChanged: (_) => setState(() {}),', 'onChanged: (_) => _refreshItems(),')
-          s = s.replace('onSelected: (_) => setState(() => _category = value),', 'onSelected: (_) => setState(() { _category = value; _itemsFuture = _load(); }),')
+          s = s.replace(
+              'onSelected: (_) => setState(() => _category = value),',
+              'onSelected: (_) => setState(() { _category = value; _itemsFuture = _load(); }),',
+          )
           s = s.replace('if (mounted) setState(() {});', 'if (mounted) _refreshItems();')
-          s = s.replace('await _repo.setFavorite(item.id!, !item.isFavorite); setState(() {});', 'await _repo.setFavorite(item.id!, !item.isFavorite); _refreshItems();')
-          if 'future: _itemsFuture' not in s or '_itemsFuture = _load();' not in s:
+          s = s.replace(
+              'await _repo.setFavorite(item.id!, !item.isFavorite); setState(() {});',
+              'await _repo.setFavorite(item.id!, !item.isFavorite); _refreshItems();',
+          )
+          if 'future: _itemsFuture' not in s or 'late Future<List<IslamicContent>> _itemsFuture;' not in s:
               raise SystemExit('Could not apply stable FutureBuilder patch safely')
           p.write_text(s)
-          print('Cached content Future so audio/player setState events do not restart SQLite loading.')
+          print('Cached content Future so player state updates do not restart SQLite loading.')
           PY
 
       - name: Generate clean Android wrapper
